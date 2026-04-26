@@ -101,7 +101,7 @@ function Invoke-BuildInVenv {
     [string]$PythonCmd,
     [string]$VenvDir,
     [string]$RequirementsFile,
-    [string]$SpecFile,
+    [string]$BuildMode,
     [string]$OutputName
   )
 
@@ -113,13 +113,14 @@ function Invoke-BuildInVenv {
   Invoke-Expression "$PythonCmd -m venv --clear `"$VenvDir`""
   & "$VenvDir\Scripts\python.exe" -m pip install --upgrade pip
   & "$VenvDir\Scripts\python.exe" -m pip install -r $RequirementsFile
-  & "$VenvDir\Scripts\pyinstaller.exe" --noconfirm --clean --distpath "dist" $SpecFile
-  $distExe = Join-Path (Join-Path $PSScriptRoot "dist") "$OutputName.exe"
-  $rootExe = Join-Path $PSScriptRoot "$OutputName.exe"
-  if (-not (Test-Path -LiteralPath $distExe)) {
-    throw "Missing built exe in dist: $distExe"
+  & "$VenvDir\Scripts\python.exe" (Join-Path $PSScriptRoot "build.py") $BuildMode
+  if ($LASTEXITCODE -ne 0) {
+    throw "build.py $BuildMode failed for $OutputName"
   }
-  Move-Item -LiteralPath $distExe -Destination $rootExe -Force
+  $rootExe = Join-Path $PSScriptRoot "$OutputName.exe"
+  if (-not (Test-Path -LiteralPath $rootExe)) {
+    throw "Missing built exe: $rootExe"
+  }
   Ensure-CleanTempDirs
 }
 
@@ -130,14 +131,14 @@ Invoke-BuildInVenv `
   -PythonCmd $PyWin10 `
   -VenvDir ".venv-build-win10" `
   -RequirementsFile "requirements-win10.txt" `
-  -SpecFile "bm-sound-effects-switch.spec" `
+  -BuildMode "win10" `
   -OutputName "bm-sound-effects-switch"
 
 Invoke-BuildInVenv `
   -PythonCmd $PyWin7 `
   -VenvDir ".venv-build-win7" `
   -RequirementsFile "requirements-win7.txt" `
-  -SpecFile "bm-sound-effects-switch_win7.spec" `
+  -BuildMode "win7" `
   -OutputName "bm-sound-effects-switch_win7"
 
 Write-Host ""
