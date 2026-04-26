@@ -121,13 +121,13 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1 -PyWin10 "py -3.13" -PyWin7
 
 說明：
 
-- PyInstaller 先輸出至暫存目錄 `dist`，`build_win10.bat`／`build_win7.bat` 會將 exe **搬移到專案根目錄**，再清空 `build`／`dist` 內容。
+- `build.py` 內以 PyInstaller 建置，先輸出至暫存目錄 `dist`，再將 exe **搬移到專案根目錄**，最後清空 `build`／`dist` 並刪除根目錄可能產生的 `*.spec`（不納入版控）。
 - `bm-sound-effects-switch.exe`：使用 `requirements-win10.txt`（Win10/11 工具鏈）。
 - `bm-sound-effects-switch_win7.exe`：使用 `requirements-win7.txt`（Win7 相容工具鏈）。
 - 在 Win7 上請執行 `bm-sound-effects-switch_win7.exe`，不要執行 `bm-sound-effects-switch.exe`。
 - 兩份 `.bat` 直接使用 PATH 上的 Python；若改跑 `build.ps1`，仍會建立 `.venv-build-win10`、`.venv-build-win7` 以隔離兩套依賴。
 
-> 若僅手動執行 PyInstaller 而未使用本專 `build_win10.bat`／`build_win7.bat`／`build.ps1`，產物通常留在 `dist\`，不會自動搬至根目錄。
+> 若僅手動執行 PyInstaller 而未使用本專 `build.py`（或 `build_win10.bat`／`build_win7.bat`／`build.ps1`），產物通常留在 `dist\`，不會自動搬至根目錄，也可能留下 `*.spec`。
 
 > Win7 版若遇到 `api-ms-win-core-*.dll` 缺失，請依上文〈Win7 執行前必要環境〉與 `README-WIN7.txt` 處理。
 
@@ -171,9 +171,10 @@ python main.py
 | 路徑                            | 說明                              |
 | ----------------------------- | ------------------------------- |
 | `main.py`                      | 主程式（UI、裝置切換、熱鍵、系統匣、防多開）         |
+| `build.py`                      | Windows 單檔建置邏輯（由 `.bat`／`build.ps1` 呼叫 `win10`／`win7`） |
 | `build_win7.bat`               | Win7 單檔打包（最終 exe 於專案根目錄）          |
 | `build_win10.bat`              | Win10 單檔打包（最終 exe 於專案根目錄）         |
-| `build_win10+win7.bat`         | Win10 + Win7 雙版（呼叫 `build.ps1`） |
+| `build_win10+win7.bat`         | Win10 + Win7 雙版（依序呼叫 `build_win10.bat`、`build_win7.bat`） |
 | `build.ps1`                    | Windows 雙版打包腳本（PowerShell）      |
 | `version_info.txt`             | Windows exe 檔案版本資源               |
 | `requirements-win10.txt`       | Win10/11 打包用 Python 相依套件       |
