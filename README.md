@@ -121,13 +121,13 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1 -PyWin10 "py -3.13" -PyWin7
 
 說明：
 
-- `build.py` 內以 PyInstaller 建置，先輸出至暫存目錄 `dist`，再將 exe **搬移到專案根目錄**，最後清空 `build`／`dist` 並刪除根目錄可能產生的 `*.spec`（不納入版控）。
+- `build.py` 內以 PyInstaller 建置（`--specpath` 設於 `build`），先輸出至暫存目錄 `dist`，再將 exe **搬移到專案根目錄**，最後清空 `build`／`dist`。
 - `bm-sound-effects-switch.exe`：使用 `requirements-win10.txt`（Win10/11 工具鏈）。
 - `bm-sound-effects-switch_win7.exe`：使用 `requirements-win7.txt`（Win7 相容工具鏈）。
 - 在 Win7 上請執行 `bm-sound-effects-switch_win7.exe`，不要執行 `bm-sound-effects-switch.exe`。
 - 兩份 `.bat` 直接使用 PATH 上的 Python；若改跑 `build.ps1`，仍會建立 `.venv-build-win10`、`.venv-build-win7` 以隔離兩套依賴。
 
-> 若僅手動執行 PyInstaller 而未使用本專 `build.py`（或 `build_win10.bat`／`build_win7.bat`／`build.ps1`），產物通常留在 `dist\`，不會自動搬至根目錄，也可能留下 `*.spec`。
+> 若僅手動執行 PyInstaller 而未使用本專 `build.py`（或 `build_win10.bat`／`build_win7.bat`／`build.ps1`），產物通常留在 `dist\`，不會自動搬至根目錄；手動建置時請自行清理暫存檔。
 
 > Win7 版若遇到 `api-ms-win-core-*.dll` 缺失，請依上文〈Win7 執行前必要環境〉與 `README-WIN7.txt` 處理。
 
@@ -207,8 +207,12 @@ python main.py
   "playback_devices": "재생 장치",
   "recording_devices": "녹음 장치",
   "refresh": "새로 고침",
-  "set_default_playback": "시스템 기본 재생으로 설정",
-  "set_default_recording": "시스템 기본 녹음으로 설정",
+  "suffix_default_both": "[기본값]",
+  "suffix_default_device": "[기본 장치]",
+  "suffix_default_comm": "[통신 기본 장치]",
+  "set_default_all": "기본값으로 설정",
+  "set_default_device": "기본 장치로 설정",
+  "set_default_comm": "통신 기본 장치로 설정",
   "group_settings_frame": "프리셋 설정",
   "col_group": "번호",
   "col_playback": "재생",
@@ -220,8 +224,8 @@ python main.py
   "reset_group_button": "초기화",
   "apply_this_group": "적용",
   "save_group": "저장",
-  "open_system_sound": "시스템 소리 열기",
-  "open_sound_console": "사운드 제어판 열기",
+  "open_system_sound": "사운드 설정 열기",
+  "open_sound_console": "추가 사운드 설정 열기",
   "lang_cycle": "언어",
   "err_title": "오류",
   "err_save": "저장 실패",

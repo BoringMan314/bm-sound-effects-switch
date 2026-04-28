@@ -15,6 +15,7 @@ import ctypes
 from ctypes import wintypes
 
 import tkinter as tk
+from tkinter import Canvas
 from tkinter import font as tkfont
 from tkinter import ttk
 
@@ -83,16 +84,24 @@ _DEFAULT_ZH_TW = {
     "settings": "設定",
     "project_name": "音效切換器",
     "combo_empty": "（未選擇）",
-    "offline_prefix": "[離線] ",
+    "offline_prefix": "[已離線] ",
     "playback_devices": "播放裝置",
     "recording_devices": "錄製裝置",
     "refresh": "重新整理",
-    "set_default_playback": "設為系統預設播放",
-    "set_default_recording": "設為系統預設錄製",
+    "suffix_default_both": "[預設]",
+    "suffix_default_device": "[預設裝置]",
+    "suffix_default_comm": "[預設通訊裝置]",
+    "set_default_all": "設為預設",
+    "set_default_device": "設為預設裝置",
+    "set_default_comm": "設為預設通訊裝置",
     "group_settings_frame": "組別設定",
     "col_group": "組",
     "col_playback": "播放裝置",
     "col_recording": "錄製裝置",
+    "col_apply_mode": "預設方式",
+    "group_mode_both_short": "雙預設",
+    "group_mode_primary_short": "預設裝置",
+    "group_mode_comm_short": "通訊裝置",
     "col_hotkey": "快捷鍵",
     "col_apply": "套用組合",
     "col_save": "儲存組合",
@@ -100,8 +109,8 @@ _DEFAULT_ZH_TW = {
     "reset_group_button": "重設",
     "apply_this_group": "套用",
     "save_group": "儲存",
-    "open_system_sound": "開啟系統音效",
-    "open_sound_console": "開聲音控制台",
+    "open_system_sound": "開啟音效設定",
+    "open_sound_console": "開啟更多音效設定",
     "lang_cycle": "語言",
     "err_title": "錯誤",
     "err_save": "儲存失敗",
@@ -138,16 +147,24 @@ _DEFAULT_ZH_CN = {
     "settings": "设置",
     "project_name": "音效切换器",
     "combo_empty": "（未选择）",
-    "offline_prefix": "[离线] ",
+    "offline_prefix": "[已离线] ",
     "playback_devices": "播放设备",
     "recording_devices": "录制设备",
     "refresh": "刷新",
-    "set_default_playback": "设为系统默认播放",
-    "set_default_recording": "设为系统默认录制",
+    "suffix_default_both": "[默认]",
+    "suffix_default_device": "[默认设备]",
+    "suffix_default_comm": "[默认通信设备]",
+    "set_default_all": "设为默认值",
+    "set_default_device": "设为默认设备",
+    "set_default_comm": "设为默认通信设备",
     "group_settings_frame": "组设置",
     "col_group": "组",
     "col_playback": "播放设备",
     "col_recording": "录制设备",
+    "col_apply_mode": "默认方式",
+    "group_mode_both_short": "双默认",
+    "group_mode_primary_short": "默认设备",
+    "group_mode_comm_short": "通信设备",
     "col_hotkey": "快捷键",
     "col_apply": "应用组合",
     "col_save": "保存组合",
@@ -155,8 +172,8 @@ _DEFAULT_ZH_CN = {
     "reset_group_button": "重置",
     "apply_this_group": "应用",
     "save_group": "保存",
-    "open_system_sound": "打开系统声音",
-    "open_sound_console": "打开声音控制台",
+    "open_system_sound": "打开声音设置",
+    "open_sound_console": "打开更多声音设置",
     "lang_cycle": "语言",
     "err_title": "错误",
     "err_save": "保存失败",
@@ -197,12 +214,20 @@ _DEFAULT_JA = {
     "playback_devices": "再生デバイス",
     "recording_devices": "録音デバイス",
     "refresh": "更新",
-    "set_default_playback": "既定の再生に設定",
-    "set_default_recording": "既定の録音に設定",
+    "suffix_default_both": "[既定]",
+    "suffix_default_device": "[既定のデバイス]",
+    "suffix_default_comm": "[既定の通信デバイス]",
+    "set_default_all": "既定に設定",
+    "set_default_device": "既定のデバイスに設定",
+    "set_default_comm": "既定の通信デバイスに設定",
     "group_settings_frame": "プリセット設定",
     "col_group": "番号",
     "col_playback": "再生",
     "col_recording": "録音",
+    "col_apply_mode": "既定の適用",
+    "group_mode_both_short": "既定・通信",
+    "group_mode_primary_short": "既定デバイス",
+    "group_mode_comm_short": "通信",
     "col_hotkey": "ショートカット",
     "col_apply": "組み合わせを適用",
     "col_save": "組み合わせを保存",
@@ -211,7 +236,7 @@ _DEFAULT_JA = {
     "apply_this_group": "適用",
     "save_group": "保存",
     "open_system_sound": "サウンド設定を開く",
-    "open_sound_console": "サウンド（再生デバイス）",
+    "open_sound_console": "その他のサウンド設定を開く",
     "lang_cycle": "言語",
     "err_title": "エラー",
     "err_save": "保存に失敗しました",
@@ -252,12 +277,20 @@ _DEFAULT_EN = {
     "playback_devices": "Playback devices",
     "recording_devices": "Recording devices",
     "refresh": "Refresh",
-    "set_default_playback": "Set as default playback",
-    "set_default_recording": "Set as default recording",
+    "suffix_default_both": "[Default]",
+    "suffix_default_device": "[Default Device]",
+    "suffix_default_comm": "[Default Communications Device]",
+    "set_default_all": "Set Default",
+    "set_default_device": "Set as Default Device",
+    "set_default_comm": "Set as Default Communication Device",
     "group_settings_frame": "Preset settings",
     "col_group": "#",
     "col_playback": "Playback",
     "col_recording": "Recording",
+    "col_apply_mode": "Default mode",
+    "group_mode_both_short": "All roles",
+    "group_mode_primary_short": "Devices",
+    "group_mode_comm_short": "Comms only",
     "col_hotkey": "Hotkey",
     "col_apply": "Apply combination",
     "col_save": "Save combination",
@@ -265,8 +298,8 @@ _DEFAULT_EN = {
     "reset_group_button": "Reset",
     "apply_this_group": "Apply",
     "save_group": "Save",
-    "open_system_sound": "System sound (Settings)",
-    "open_sound_console": "Sound control panel",
+    "open_system_sound": "Open Sound settings",
+    "open_sound_console": "More sound settings",
     "lang_cycle": "Language",
     "err_title": "Error",
     "err_save": "Save failed",
@@ -315,15 +348,23 @@ MIN_GROUPS = 2
 DEFAULT_NUM_GROUPS = 2
                
 DEVICE_LIST_VISIBLE_ROWS = 5
-                                        
+
+DEVICE_TREE_WIDTH_PAD = 40
+
 GROUPS_VIEWPORT_HEIGHT = 150
                                                         
 CONFIG_BASENAME_MAIN = "bm-sound-effects-switch.json"
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 510
+WINDOW_WIDTH = 1100
+WINDOW_HEIGHT = 530
 WINDOW_POS_X = 100
 WINDOW_POS_Y = 100
+
+                   
+UI_PAD_H_EDGE = 8
+UI_PAD_H_GAP = 8
+
+GROUP_COL_NUM_WIDTH = 44
 
 
 def _primary_screen_origin() -> tuple[int, int]:
@@ -467,7 +508,7 @@ def _empty_group() -> dict:
         "recording_id": None,
         "playback_name": "",
         "recording_name": "",
-                                                              
+        "apply_mode": GROUP_APPLY_ALL,
         "hotkey_mods": None,
         "hotkey_vk": None,
     }
@@ -609,6 +650,27 @@ def default_config() -> dict:
     }
 
 
+def _ensure_language_translation_keys_inplace(raw: dict) -> dict:
+                                        
+    lg = raw.get("languages")
+    if not isinstance(lg, dict):
+        return raw
+    for lang_code in list(lg.keys()):
+        bm = lg.get(lang_code)
+        if not isinstance(bm, dict):
+            continue
+        tmpl = DEFAULT_TRANSLATIONS.get(lang_code)
+        if tmpl is None:
+            tmpl = DEFAULT_TRANSLATIONS["zh_TW"]
+        merged = dict(tmpl)
+        for k, v in bm.items():
+            if isinstance(v, str):
+                merged[k] = v
+        lg[lang_code] = merged
+    raw["languages"] = lg
+    return raw
+
+
 def _is_valid_sound_config(raw: dict) -> bool:
     if not isinstance(raw, dict):
         return False
@@ -625,7 +687,7 @@ def _is_valid_sound_config(raw: dict) -> bool:
     for m in lg.values():
         if not isinstance(m, dict):
             return False
-        if frozenset(m.keys()) != SOUND_I18N_REF_KEYS:
+        if not SOUND_I18N_REF_KEYS.issubset(frozenset(m.keys())):
             return False
         for rk in SOUND_I18N_REF_KEYS:
             v = m.get(rk)
@@ -657,6 +719,7 @@ def load_config() -> dict:
             pass
         save_config(data)
         return data
+    raw = _ensure_language_translation_keys_inplace(raw)
     if not _is_valid_sound_config(raw):
         try:
             os.remove(p)
@@ -716,10 +779,111 @@ def play_success_sound() -> None:
 
 
                   
+from comtypes import GUID as _COM_GUID
+
 from pycaw.constants import DEVICE_STATE, EDataFlow, ERole
 from pycaw.pycaw import AudioUtilities
 
+try:
+    from pycaw.constants import CLSID_CPolicyConfigClient
+except ImportError:
+    CLSID_CPolicyConfigClient = _COM_GUID("{870af99c-171d-4f9e-af0d-e63df40c2bc9}")
+
+try:
+    from pycaw.api.policyconfig import IPolicyConfig
+except ImportError:
+    from ctypes import HRESULT, POINTER
+    from ctypes.wintypes import BOOL, DWORD, LPCWSTR
+    from comtypes import COMMETHOD, GUID, IUnknown
+
+    from pycaw.api.mmdeviceapi import PROPERTYKEY
+    from pycaw.api.mmdeviceapi.depend import PROPVARIANT
+
+    class IPolicyConfig(IUnknown):
+        _case_insensitive_ = True
+        _iid_ = GUID("{f8679f50-850a-41cf-9c72-430f290290c8}")
+        _methods_ = (
+            COMMETHOD([], HRESULT, "Unused1"),
+            COMMETHOD([], HRESULT, "Unused2"),
+            COMMETHOD([], HRESULT, "Unused3"),
+            COMMETHOD([], HRESULT, "Unused4"),
+            COMMETHOD([], HRESULT, "Unused5"),
+            COMMETHOD([], HRESULT, "Unused6"),
+            COMMETHOD([], HRESULT, "Unused7"),
+            COMMETHOD([], HRESULT, "Unused8"),
+            COMMETHOD(
+                [],
+                HRESULT,
+                "GetPropertyValue",
+                (["in"], LPCWSTR, "pwstrDeviceId"),
+                (["in"], POINTER(PROPERTYKEY), "pKey"),
+                (["out"], POINTER(PROPVARIANT), "pValue"),
+            ),
+            COMMETHOD(
+                [],
+                HRESULT,
+                "SetPropertyValue",
+                (["in"], LPCWSTR, "pwstrDeviceId"),
+                (["in"], POINTER(PROPERTYKEY), "pKey"),
+                (["in"], POINTER(PROPVARIANT), "pValue"),
+            ),
+            COMMETHOD(
+                [],
+                HRESULT,
+                "SetDefaultEndpoint",
+                (["in"], LPCWSTR, "pwstrDeviceId"),
+                (["in"], DWORD, "role"),
+            ),
+            COMMETHOD(
+                [],
+                HRESULT,
+                "SetEndpointVisibility",
+                (["in"], LPCWSTR, "pwstrDeviceId"),
+                (["in"], BOOL, "bVisible"),
+            ),
+        )
+
+
+PRIMARY_DEFAULT_ROLES = [ERole.eConsole, ERole.eMultimedia]
 ALL_ROLES = [ERole.eConsole, ERole.eMultimedia, ERole.eCommunications]
+
+GROUP_APPLY_ALL = "all"
+GROUP_APPLY_PRIMARY = "primary"
+GROUP_APPLY_COMM = "comm"
+GROUP_APPLY_MODE_ORDER = (GROUP_APPLY_ALL, GROUP_APPLY_PRIMARY, GROUP_APPLY_COMM)
+
+
+def _normalize_group_apply_mode(mode: object) -> str:
+    if isinstance(mode, str) and mode in GROUP_APPLY_MODE_ORDER:
+        return mode
+    return GROUP_APPLY_ALL
+
+
+def roles_for_group_apply_mode(mode: object) -> list:
+    m = _normalize_group_apply_mode(mode)
+    if m == GROUP_APPLY_PRIMARY:
+        return list(PRIMARY_DEFAULT_ROLES)
+    if m == GROUP_APPLY_COMM:
+        return [ERole.eCommunications]
+    return list(ALL_ROLES)
+
+
+def set_default_endpoint_roles(dev_id: str, roles: list) -> None:
+    sd = getattr(AudioUtilities, "SetDefaultDevice", None)
+    if sd is not None:
+        sd(dev_id, roles)
+        return
+    import comtypes
+
+    policy_config = comtypes.CoCreateInstance(
+        CLSID_CPolicyConfigClient, IPolicyConfig, comtypes.CLSCTX_ALL
+    )
+    for role in roles:
+        hr = policy_config.SetDefaultEndpoint(dev_id, role.value)
+        if hr != 0:
+            raise OSError(
+                f"SetDefaultEndpoint failed for role {role} with HRESULT {hr:#x}"
+            )
 
 
 def _coerce_int(value: object) -> int | None:
@@ -923,39 +1087,24 @@ def _default_endpoint_id_for_flow_and_role(flow_int: int, role) -> str | None:
         return None
 
 
-def _default_ids_for_playback() -> set[str]:
-    out: set[str] = set()
-    for role in (ERole.eMultimedia, ERole.eConsole):
-        did = _default_endpoint_id_for_flow_and_role(EDataFlow.eRender.value, role)
-        if did:
-            out.add(did)
-    return out
+def _playback_default_mm_and_comm_ids() -> tuple[str | None, str | None]:
+    mm = _default_endpoint_id_for_flow_and_role(
+        EDataFlow.eRender.value, ERole.eMultimedia
+    )
+    comm = _default_endpoint_id_for_flow_and_role(
+        EDataFlow.eRender.value, ERole.eCommunications
+    )
+    return mm, comm
 
 
-def _default_ids_for_recording() -> set[str]:
-    out: set[str] = set()
-    for role in (ERole.eMultimedia, ERole.eConsole):
-        did = _default_endpoint_id_for_flow_and_role(EDataFlow.eCapture.value, role)
-        if did:
-            out.add(did)
-    return out
-
-
-def _device_row_is_default(did: str, default_ids: set[str]) -> bool:
-    if not default_ids:
-        return False
-    for x in default_ids:
-        if _mmdevice_ids_equal(did, x):
-            return True
-    return False
-
-
-def set_default_playback(dev_id: str) -> None:
-    AudioUtilities.SetDefaultDevice(dev_id, ALL_ROLES)
-
-
-def set_default_recording(dev_id: str) -> None:
-    AudioUtilities.SetDefaultDevice(dev_id, ALL_ROLES)
+def _capture_default_mm_and_comm_ids() -> tuple[str | None, str | None]:
+    mm = _default_endpoint_id_for_flow_and_role(
+        EDataFlow.eCapture.value, ERole.eMultimedia
+    )
+    comm = _default_endpoint_id_for_flow_and_role(
+        EDataFlow.eCapture.value, ERole.eCommunications
+    )
+    return mm, comm
 
 
 def _safe_tree_iid(dev_id: str) -> str:
@@ -994,17 +1143,18 @@ class SoundSwitcherApp:
         self.root.title(self._win_title())
         _singleton_window_title = self._win_title()
         self._set_app_user_model_id()
-        self._set_app_user_model_id()
         self.root.resizable(False, False)
         self.root.minsize(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.root.maxsize(WINDOW_WIDTH, WINDOW_HEIGHT)
         self._move_to_default_position()
         self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_rowconfigure(0, weight=1)
         self._hotkey_hwnd = None
         self._hotkey_ids = list(range(1, MAX_GROUPS + 1))
         self._hotkey_capture_index: int | None = None
         self._hotkey_clickout_bind_id: str | None = None
         self.group_hotkey_entries: list[ttk.Entry] = []
+        self.group_mode_buttons: list[ttk.Button] = []
 
         self._device_name_to_id_play: dict[str, str] = {}
         self._device_name_to_id_rec: dict[str, str] = {}
@@ -1053,34 +1203,130 @@ class SoundSwitcherApp:
             except tk.TclError:
                 pass
 
+    def _treeview_cell_font(self) -> tkfont.Font:
+        st = ttk.Style()
+        spec = st.lookup("Treeview", "font") or st.lookup("Treeview.Item", "font")
+        if spec:
+            try:
+                return tkfont.Font(root=self.root, font=spec)
+            except tk.TclError:
+                pass
+        return tkfont.Font(root=self.root)
+
+    def _collect_visible_badge_strings(self) -> set[str]:
+        out: set[str] = set()
+        for tv in (getattr(self, "pb_tree", None), getattr(self, "rec_tree", None)):
+            if tv is None:
+                continue
+            for iid in tv.get_children():
+                t = (tv.item(iid, "text") or "").strip()
+                if t:
+                    out.add(t)
+        return out
+
+    def _measure_badge_column_width_for_strings(self, badges: set[str]) -> int:
+        fobj = self._treeview_cell_font()
+        tree_gutter = 16
+        right_pad = 6
+        if not badges:
+            return max(tree_gutter + 8, 22)
+        widest = max(fobj.measure(b) for b in badges)
+        return max(tree_gutter + widest + right_pad, 24)
+
+    def _sync_device_tree_column_widths(self) -> None:
+        pb = getattr(self, "pb_tree", None)
+        rec = getattr(self, "rec_tree", None)
+        if pb is None or rec is None:
+            return
+        badge_w = self._measure_badge_column_width_for_strings(
+            self._collect_visible_badge_strings()
+        )
+        inner = WINDOW_WIDTH - DEVICE_TREE_WIDTH_PAD
+        name_w = max(120, inner - badge_w - 8)
+        for tv in (pb, rec):
+            tv.column(
+                "#0",
+                width=badge_w,
+                minwidth=18,
+                stretch=False,
+                anchor=tk.W,
+            )
+            tv.column("name", width=name_w, stretch=True, anchor=tk.W)
+
+    def _configure_treeview_theme(self) -> None:
+        st = ttk.Style()
+        try:
+            st.configure("Treeview", rowheight=22, borderwidth=0, indent=12)
+        except tk.TclError:
+            st.configure("Treeview", rowheight=22, borderwidth=0)
+        try:
+            self.root.tk.eval("ttk::style configure Treeview -indent 12")
+        except tk.TclError:
+            pass
+        bg = st.lookup("Treeview", "background") or st.lookup(
+            "Treeview", "fieldbackground"
+        )
+        if bg:
+            try:
+                st.configure("Treeview", focuscolor=bg)
+            except tk.TclError:
+                pass
+        for script in (
+            "ttk::style configure Treeview -focuswidth 0",
+            "ttk::style configure Treeview.Item -focuswidth 0",
+        ):
+            try:
+                self.root.tk.eval(script)
+            except tk.TclError:
+                pass
+
     def _build_ui(self) -> None:
         main = ttk.Frame(self.root, padding=8)
-        main.grid(row=0, column=0, sticky=tk.NW)
+        main.grid(row=0, column=0, sticky=tk.NSEW)
         main.grid_columnconfigure(0, weight=1)
 
-        style = ttk.Style()
-        style.configure("Treeview", rowheight=22)
-        style.configure("RedRO.TCombobox", fieldbackground="#ffcccc")
-        style.map(
-            "RedRO.TCombobox",
-            fieldbackground=[("readonly", "#ffcccc")],
-        )
+        self._configure_treeview_theme()
 
         r = 0
-                    
-        self._lbl_pb_title = ttk.Label(main, text=self.tr("playback_devices"))
-        self._lbl_pb_title.grid(row=r, column=0, sticky=tk.W)
+
+        pb_top = ttk.Frame(main)
+        pb_top.grid(row=r, column=0, sticky=tk.EW)
+        pb_top.columnconfigure(0, weight=1)
+        self._lbl_pb_title = ttk.Label(pb_top, text=self.tr("playback_devices"))
+        self._lbl_pb_title.grid(row=0, column=0, sticky=tk.W)
+        pb_top_btns = ttk.Frame(pb_top)
+        pb_top_btns.grid(row=0, column=1, sticky=tk.E)
+        hp_e, hp_g = UI_PAD_H_EDGE, UI_PAD_H_GAP
+        self._btn_sys_sound = ttk.Button(
+            pb_top_btns,
+            text=self.tr("open_system_sound"),
+            command=self._open_system_sound,
+        )
+        self._btn_sys_sound.pack(side=tk.LEFT, padx=(hp_e, hp_g))
+        self._btn_sound_console = ttk.Button(
+            pb_top_btns,
+            text=self.tr("open_sound_console"),
+            command=self._open_sound_console,
+        )
+        self._btn_sound_console.pack(side=tk.LEFT, padx=(0, hp_g))
+        self._btn_lang = ttk.Button(
+            pb_top_btns,
+            text=lang_button_label(self.cfg, get_current_lang(self.cfg)),
+            command=self._cycle_language,
+        )
+        self._btn_lang.pack(side=tk.LEFT, padx=(0, hp_e))
         r += 1
         self._pb_frame = ttk.Frame(main)
         self._pb_frame.grid(row=r, column=0, sticky=tk.NSEW, pady=(0, 4))
         self._pb_frame.grid_columnconfigure(0, weight=1)
         self.pb_tree = ttk.Treeview(
             self._pb_frame,
+            columns=("name",),
             show="tree",
             height=DEVICE_LIST_VISIBLE_ROWS,
             selectmode="browse",
+            takefocus=False,
         )
-        self.pb_tree.column("#0", width=WINDOW_WIDTH - 20, stretch=True)
         self.pb_sb = ttk.Scrollbar(
             self._pb_frame, orient=tk.VERTICAL, command=self.pb_tree.yview
         )
@@ -1089,14 +1335,30 @@ class SoundSwitcherApp:
 
         bf = ttk.Frame(main)
         bf.grid(row=r + 1, column=0, sticky=tk.EW, pady=4)
+        bp_e, bp_g = UI_PAD_H_EDGE, UI_PAD_H_GAP
+        bf_btns = ttk.Frame(bf)
+        bf_btns.pack(side=tk.LEFT)
         self._btn_pb_refresh = ttk.Button(
-            bf, text=self.tr("refresh"), command=self.refresh_playback_list
+            bf_btns, text=self.tr("refresh"), command=self.refresh_playback_list
         )
-        self._btn_pb_refresh.pack(side=tk.LEFT, padx=2)
-        self._btn_pb_default = ttk.Button(
-            bf, text=self.tr("set_default_playback"), command=self.apply_selected_playback
+        self._btn_pb_refresh.pack(side=tk.LEFT, padx=(bp_e, bp_g))
+        self._btn_pb_default_all = ttk.Button(
+            bf_btns, text=self.tr("set_default_all"), command=self.apply_selected_playback_all
         )
-        self._btn_pb_default.pack(side=tk.LEFT, padx=2)
+        self._btn_pb_default_all.pack(side=tk.LEFT, padx=(0, bp_g))
+        self._btn_pb_default_device = ttk.Button(
+            bf_btns,
+            text=self.tr("set_default_device"),
+            command=self.apply_selected_playback_device,
+        )
+        self._btn_pb_default_device.pack(side=tk.LEFT, padx=(0, bp_g))
+        self._btn_pb_default_comm = ttk.Button(
+            bf_btns,
+            text=self.tr("set_default_comm"),
+            command=self.apply_selected_playback_comm,
+        )
+        self._btn_pb_default_comm.pack(side=tk.LEFT, padx=(0, bp_e))
+        ttk.Frame(bf).pack(side=tk.LEFT, expand=True, fill=tk.X)
         r += 2
 
                     
@@ -1111,11 +1373,12 @@ class SoundSwitcherApp:
         self._rec_frame.grid_columnconfigure(0, weight=1)
         self.rec_tree = ttk.Treeview(
             self._rec_frame,
+            columns=("name",),
             show="tree",
             height=DEVICE_LIST_VISIBLE_ROWS,
             selectmode="browse",
+            takefocus=False,
         )
-        self.rec_tree.column("#0", width=WINDOW_WIDTH - 20, stretch=True)
         self.rec_sb = ttk.Scrollbar(
             self._rec_frame, orient=tk.VERTICAL, command=self.rec_tree.yview
         )
@@ -1124,59 +1387,70 @@ class SoundSwitcherApp:
         self._bind_tree_mousewheel(self.pb_tree)
         self._bind_tree_mousewheel(self.rec_tree)
 
-        self.pb_tree.tag_configure("offline", background="#ffcccc")
-        self.pb_tree.tag_configure("default", background="#fff59d", foreground="#1a1a1a")
-        self.rec_tree.tag_configure("offline", background="#ffcccc")
-        self.rec_tree.tag_configure("default", background="#fff59d", foreground="#1a1a1a")
-
         rf = ttk.Frame(main)
         rf.grid(row=r + 1, column=0, sticky=tk.EW, pady=(4, 12))
+        rp_e, rp_g = UI_PAD_H_EDGE, UI_PAD_H_GAP
+        rf_btns = ttk.Frame(rf)
+        rf_btns.pack(side=tk.LEFT)
         self._btn_rec_refresh = ttk.Button(
-            rf, text=self.tr("refresh"), command=self.refresh_recording_list
+            rf_btns, text=self.tr("refresh"), command=self.refresh_recording_list
         )
-        self._btn_rec_refresh.pack(side=tk.LEFT, padx=2)
-        self._btn_rec_default = ttk.Button(
-            rf, text=self.tr("set_default_recording"), command=self.apply_selected_recording
+        self._btn_rec_refresh.pack(side=tk.LEFT, padx=(rp_e, rp_g))
+        self._btn_rec_default_all = ttk.Button(
+            rf_btns,
+            text=self.tr("set_default_all"),
+            command=self.apply_selected_recording_all,
         )
-        self._btn_rec_default.pack(side=tk.LEFT, padx=2)
-        ttk.Button(rf, text="－", width=3, command=self._remove_group).pack(
-            side=tk.RIGHT, padx=2
+        self._btn_rec_default_all.pack(side=tk.LEFT, padx=(0, rp_g))
+        self._btn_rec_default_device = ttk.Button(
+            rf_btns,
+            text=self.tr("set_default_device"),
+            command=self.apply_selected_recording_device,
         )
-        ttk.Button(rf, text="＋", width=3, command=self._add_group).pack(
-            side=tk.RIGHT, padx=2
+        self._btn_rec_default_device.pack(side=tk.LEFT, padx=(0, rp_g))
+        self._btn_rec_default_comm = ttk.Button(
+            rf_btns,
+            text=self.tr("set_default_comm"),
+            command=self.apply_selected_recording_comm,
         )
-        self._btn_lang = ttk.Button(
-            rf,
-            text=lang_button_label(self.cfg, get_current_lang(self.cfg)),
-            command=self._cycle_language,
+        self._btn_rec_default_comm.pack(side=tk.LEFT, padx=(0, rp_g))
+        self._device_default_apply_widgets = (
+            self._btn_pb_default_all,
+            self._btn_pb_default_device,
+            self._btn_pb_default_comm,
+            self._btn_rec_default_all,
+            self._btn_rec_default_device,
+            self._btn_rec_default_comm,
         )
-        self._btn_lang.pack(side=tk.RIGHT, padx=6)
-        self._btn_sound_console = ttk.Button(
-            rf,
-            text=self.tr("open_sound_console"),
-            command=self._open_sound_console,
+        rf_pair = ttk.Frame(rf)
+        rf_pair.pack(side=tk.RIGHT, padx=(rp_g, 0))
+        ttk.Button(rf_pair, text="＋", width=3, command=self._add_group).pack(
+            side=tk.LEFT, padx=(rp_e, rp_g)
         )
-        self._btn_sound_console.pack(side=tk.RIGHT, padx=6)
-        self._btn_sys_sound = ttk.Button(
-            rf,
-            text=self.tr("open_system_sound"),
-            command=self._open_system_sound,
+        ttk.Button(rf_pair, text="－", width=3, command=self._remove_group).pack(
+            side=tk.LEFT, padx=(0, rp_e)
         )
-        self._btn_sys_sound.pack(side=tk.RIGHT, padx=6)
+        ttk.Frame(rf).pack(side=tk.LEFT, expand=True, fill=tk.X)
         r += 2
 
         main.grid_rowconfigure(r, weight=0)
-        self._groups_canvas_row = r
-        _canvas_bg = style.lookup("TFrame", "background") or self.root.cget("background")
-        self._groups_canvas = tk.Canvas(
-            main,
+        self._groups_viewport = ttk.Frame(main)
+        self._groups_viewport.grid(row=r, column=0, sticky=tk.NSEW)
+        self._groups_viewport.columnconfigure(0, weight=1)
+        _canvas_bg = ttk.Style().lookup("TFrame", "background") or self.root.cget(
+            "background"
+        )
+        self._groups_canvas = Canvas(
+            self._groups_viewport,
             highlightthickness=0,
             bd=0,
             background=_canvas_bg,
             height=GROUPS_VIEWPORT_HEIGHT,
         )
         self._groups_sb = ttk.Scrollbar(
-            main, orient=tk.VERTICAL, command=self._groups_canvas.yview
+            self._groups_viewport,
+            orient=tk.VERTICAL,
+            command=self._groups_canvas.yview,
         )
         self._groups_canvas.configure(yscrollcommand=self._groups_yscroll_set)
         self._groups_inner = ttk.Frame(self._groups_canvas)
@@ -1185,15 +1459,15 @@ class SoundSwitcherApp:
         )
         self._groups_inner.bind("<Configure>", self._on_groups_inner_configure)
         self._groups_canvas.bind("<Configure>", self._on_groups_canvas_resize)
-        self._groups_canvas.grid(row=r, column=0, sticky=tk.EW)
-        self._groups_sb.grid(row=r, column=1, sticky=tk.NS)
+        self._groups_canvas.grid(row=0, column=0, sticky=tk.NSEW)
+        self._groups_sb.grid(row=0, column=1, sticky=tk.NS)
 
         self.groups_outer = ttk.LabelFrame(
             self._groups_inner, text=self.tr("group_settings_frame"), padding=6
         )
         self.groups_outer.pack(fill=tk.X, expand=False)
         self.groups_table = ttk.Frame(self.groups_outer)
-        self.groups_table.pack(fill=tk.X, expand=False)
+        self.groups_table.pack(fill=tk.X, expand=True)
 
         self._bind_wheel_subtree(self._groups_inner)
 
@@ -1201,6 +1475,44 @@ class SoundSwitcherApp:
         self.group_rec_vars: list[tk.StringVar] = []
         self.group_play_combo: list[ttk.Combobox] = []
         self.group_rec_combo: list[ttk.Combobox] = []
+
+        self._sync_device_tree_column_widths()
+
+        self.root.bind_all(
+            "<Button-1>",
+            self._clear_device_trees_selection_if_click_outside_lists,
+            add="+",
+        )
+
+    def _widget_is_descendant(self, w: tk.Misc | None, ancestor: tk.Misc) -> bool:
+        cur = w
+        while cur is not None:
+            try:
+                if cur == ancestor:
+                    return True
+                cur = cur.master
+            except tk.TclError:
+                return False
+        return False
+
+    def _clear_device_trees_selection_if_click_outside_lists(self, event: tk.Event) -> None:
+        if getattr(self, "pb_tree", None) is None or getattr(self, "rec_tree", None) is None:
+            return
+        try:
+            w = event.widget
+        except tk.TclError:
+            return
+        if self._widget_is_descendant(w, self._pb_frame) or self._widget_is_descendant(
+            w, self._rec_frame
+        ):
+            return
+        applies = getattr(self, "_device_default_apply_widgets", ())
+        if w in applies:
+            return
+        for tv in (self.pb_tree, self.rec_tree):
+            sel = tv.selection()
+            if sel:
+                tv.selection_remove(*sel)
 
     def _launch_mmsys(self, tab: int) -> None:
         if sys.platform != "win32":
@@ -1256,13 +1568,16 @@ class SoundSwitcherApp:
         self.root.title(self._win_title())
         _singleton_window_title = self._win_title()
         self._set_app_user_model_id()
-        self._set_app_user_model_id()
         self._lbl_pb_title.configure(text=self.tr("playback_devices"))
         self._btn_pb_refresh.configure(text=self.tr("refresh"))
-        self._btn_pb_default.configure(text=self.tr("set_default_playback"))
+        self._btn_pb_default_all.configure(text=self.tr("set_default_all"))
+        self._btn_pb_default_device.configure(text=self.tr("set_default_device"))
+        self._btn_pb_default_comm.configure(text=self.tr("set_default_comm"))
         self._lbl_rec_title.configure(text=self.tr("recording_devices"))
         self._btn_rec_refresh.configure(text=self.tr("refresh"))
-        self._btn_rec_default.configure(text=self.tr("set_default_recording"))
+        self._btn_rec_default_all.configure(text=self.tr("set_default_all"))
+        self._btn_rec_default_device.configure(text=self.tr("set_default_device"))
+        self._btn_rec_default_comm.configure(text=self.tr("set_default_comm"))
         self.groups_outer.configure(text=self.tr("group_settings_frame"))
         self._btn_lang.configure(text=lang_button_label(self.cfg, get_current_lang(self.cfg)))
         self._btn_sound_console.configure(text=self.tr("open_sound_console"))
@@ -1321,9 +1636,7 @@ class SoundSwitcherApp:
             cvh = self._groups_canvas.winfo_height()
             ch = self._groups_inner.winfo_reqheight()
             if cvh > 1 and ch > cvh + 2:
-                self._groups_sb.grid(
-                    row=self._groups_canvas_row, column=1, sticky=tk.NS
-                )
+                self._groups_sb.grid(row=0, column=1, sticky=tk.NS)
             else:
                 self._groups_sb.grid_remove()
         except tk.TclError:
@@ -1403,6 +1716,19 @@ class SoundSwitcherApp:
             rows.append((label, did, True))
         return rows
 
+    def _default_row_suffix(
+        self, did: str, id_mm: str | None, id_comm: str | None
+    ) -> str:
+        m = bool(id_mm and _mmdevice_ids_equal(did, id_mm))
+        c = bool(id_comm and _mmdevice_ids_equal(did, id_comm))
+        if m and c:
+            return self.tr("suffix_default_both")
+        if m:
+            return self.tr("suffix_default_device")
+        if c:
+            return self.tr("suffix_default_comm")
+        return ""
+
     def refresh_playback_list(self) -> None:
         self.pb_tree.delete(*self.pb_tree.get_children())
         self._pb_iid_meta.clear()
@@ -1410,26 +1736,21 @@ class SoundSwitcherApp:
         try:
             devices = list_playback_devices()
         except Exception:
+            self._sync_device_tree_column_widths()
             return
         online_ids = {d.id for d in devices}
         offline = self._collect_offline_from_cfg("play")
         rows = self._merge_device_tree(devices, offline, online_ids)
-        default_ids = _default_ids_for_playback()
+        id_mm, id_comm = _playback_default_mm_and_comm_ids()
         for disp, did, off in rows:
             self._device_name_to_id_play[disp] = did
             iid = _safe_tree_iid(did)
             self._pb_iid_meta[iid] = (did, off)
-            if _device_row_is_default(did, default_ids):
-                tags = ("default",)
-            elif off:
-                tags = ("offline",)
-            else:
-                tags = ()
-            self.pb_tree.insert("", tk.END, iid=iid, text=disp, tags=tags)
+            badge = self._default_row_suffix(did, id_mm, id_comm)
+            self.pb_tree.insert("", tk.END, iid=iid, text=badge, values=(disp,))
         self._sync_combobox_choices()
         self._update_sb_visibility(self.pb_tree, self.pb_sb, self._pb_frame)
-        if self.group_play_combo:
-            self._paint_group_combos_offline()
+        self._sync_device_tree_column_widths()
 
     def refresh_recording_list(self) -> None:
         self.rec_tree.delete(*self.rec_tree.get_children())
@@ -1438,26 +1759,21 @@ class SoundSwitcherApp:
         try:
             devices = list_recording_devices()
         except Exception:
+            self._sync_device_tree_column_widths()
             return
         online_ids = {d.id for d in devices}
         offline = self._collect_offline_from_cfg("rec")
         rows = self._merge_device_tree(devices, offline, online_ids)
-        default_ids = _default_ids_for_recording()
+        id_mm, id_comm = _capture_default_mm_and_comm_ids()
         for disp, did, off in rows:
             self._device_name_to_id_rec[disp] = did
             iid = _safe_tree_iid(did)
             self._rec_iid_meta[iid] = (did, off)
-            if _device_row_is_default(did, default_ids):
-                tags = ("default",)
-            elif off:
-                tags = ("offline",)
-            else:
-                tags = ()
-            self.rec_tree.insert("", tk.END, iid=iid, text=disp, tags=tags)
+            badge = self._default_row_suffix(did, id_mm, id_comm)
+            self.rec_tree.insert("", tk.END, iid=iid, text=badge, values=(disp,))
         self._sync_combobox_choices()
         self._update_sb_visibility(self.rec_tree, self.rec_sb, self._rec_frame)
-        if self.group_play_combo:
-            self._paint_group_combos_offline()
+        self._sync_device_tree_column_widths()
 
     def _sync_combobox_choices(self) -> None:
         ce = self.tr("combo_empty")
@@ -1475,102 +1791,92 @@ class SoundSwitcherApp:
         self.group_play_combo.clear()
         self.group_rec_combo.clear()
         self.group_hotkey_entries.clear()
+        self.group_mode_buttons.clear()
 
-        ttk.Label(self.groups_table, text=self.tr("col_group")).grid(
-            row=0, column=0, padx=4, pady=2
-        )
-        ttk.Label(self.groups_table, text=self.tr("col_playback")).grid(
-            row=0, column=1, padx=4, pady=2
-        )
-        ttk.Label(self.groups_table, text=self.tr("col_recording")).grid(
-            row=0, column=2, padx=4, pady=2
-        )
-        ttk.Label(self.groups_table, text=self.tr("col_hotkey")).grid(
-            row=0, column=3, padx=4, pady=2
-        )
-        ttk.Label(self.groups_table, text=self.tr("col_apply")).grid(
-            row=0, column=4, padx=4, pady=2
-        )
-        ttk.Label(self.groups_table, text=self.tr("col_save")).grid(
-            row=0, column=5, padx=4, pady=2
-        )
-        ttk.Label(self.groups_table, text=self.tr("reset_group")).grid(
-            row=0, column=6, padx=4, pady=2
-        )
-        self.groups_table.columnconfigure(1, weight=1)
-        self.groups_table.columnconfigure(2, weight=1)
+        gp = UI_PAD_H_GAP
+        for _col, _key in (
+            (0, "col_group"),
+            (1, "col_playback"),
+            (2, "col_recording"),
+            (3, "col_apply_mode"),
+            (4, "col_hotkey"),
+            (5, "col_apply"),
+            (6, "col_save"),
+            (7, "reset_group"),
+        ):
+            ttk.Label(
+                self.groups_table,
+                text=self.tr(_key),
+                anchor=tk.CENTER,
+            ).grid(row=0, column=_col, padx=gp, pady=2, sticky=tk.NSEW)
+        _guniform = "bm_groups_cols"
+        self.groups_table.columnconfigure(0, weight=0, minsize=GROUP_COL_NUM_WIDTH)
+        for _ci in range(1, 8):
+            self.groups_table.columnconfigure(
+                _ci, weight=1, uniform=_guniform, minsize=0
+            )
 
         for i in range(self.num_groups):
             r = i + 1
-            ttk.Label(self.groups_table, text=str(i + 1)).grid(
-                row=r, column=0, padx=4, pady=3, sticky=tk.W
+            ttk.Label(self.groups_table, text=str(i + 1), anchor=tk.CENTER).grid(
+                row=r, column=0, padx=gp, pady=3, sticky=tk.NSEW
             )
             pv = tk.StringVar(value=self.tr("combo_empty"))
             rv = tk.StringVar(value=self.tr("combo_empty"))
             pc = ttk.Combobox(
-                self.groups_table, textvariable=pv, width=28, state="readonly"
+                self.groups_table, textvariable=pv, width=1, state="readonly"
             )
             rc = ttk.Combobox(
-                self.groups_table, textvariable=rv, width=28, state="readonly"
+                self.groups_table, textvariable=rv, width=1, state="readonly"
             )
-            pc.grid(row=r, column=1, padx=4, pady=3, sticky=tk.EW)
-            rc.grid(row=r, column=2, padx=4, pady=3, sticky=tk.EW)
-            he = ttk.Entry(self.groups_table, width=18, state="readonly", cursor="hand2")
-            he.grid(row=r, column=3, padx=4, pady=3, sticky=tk.W)
+            for _cb in (pc, rc):
+                _cb.bind(
+                    "<<ComboboxSelected>>",
+                    self._on_group_combo_selected_defocus,
+                    add="+",
+                )
+                _cb.bind("<Escape>", self._on_group_combo_esc, add="+")
+            pc.grid(row=r, column=1, padx=gp, pady=3, sticky=tk.EW)
+            rc.grid(row=r, column=2, padx=gp, pady=3, sticky=tk.EW)
+            mb = ttk.Button(
+                self.groups_table,
+                text=self._text_for_group_apply_mode(
+                    self.cfg["groups"][i].get("apply_mode")
+                ),
+                command=lambda idx=i: self._cycle_group_apply_mode(idx),
+                takefocus=False,
+            )
+            mb.grid(row=r, column=3, padx=gp, pady=3, sticky=tk.EW)
+            he = ttk.Entry(self.groups_table, width=1, state="readonly", cursor="hand2")
+            he.grid(row=r, column=4, padx=gp, pady=3, sticky=tk.EW)
             he.bind("<Button-1>", lambda e, idx=i: self._begin_hotkey_capture(idx))
             he.bind("<Button-3>", lambda e, idx=i: self._clear_group_hotkey(idx))
             ttk.Button(
                 self.groups_table,
                 text=self.tr("apply_this_group"),
                 command=lambda idx=i: self.apply_group(idx),
-            ).grid(row=r, column=4, padx=4, pady=3)
+            ).grid(row=r, column=5, padx=gp, pady=3, sticky=tk.EW)
             ttk.Button(
                 self.groups_table,
                 text=self.tr("save_group"),
                 command=lambda idx=i: self.save_group(idx),
-            ).grid(row=r, column=5, padx=4, pady=3)
+            ).grid(row=r, column=6, padx=gp, pady=3, sticky=tk.EW)
             ttk.Button(
                 self.groups_table,
                 text=self.tr("reset_group_button"),
                 command=lambda idx=i: self.reset_group(idx),
-            ).grid(row=r, column=6, padx=4, pady=3)
+            ).grid(row=r, column=7, padx=gp, pady=3, sticky=tk.EW)
             self.group_play_vars.append(pv)
             self.group_rec_vars.append(rv)
             self.group_play_combo.append(pc)
             self.group_rec_combo.append(rc)
+            self.group_mode_buttons.append(mb)
             self.group_hotkey_entries.append(he)
         self._sync_combobox_choices()
-        self._paint_group_combos_offline()
-        for pv, rv in zip(self.group_play_vars, self.group_rec_vars):
-            pv.trace_add("write", lambda *_: self._schedule_paint_group_combos())
-            rv.trace_add("write", lambda *_: self._schedule_paint_group_combos())
         self._bind_wheel_subtree(self.groups_table)
         self._bind_space_block_recursive(self.groups_table)
         self._disable_button_focus_rect(self.groups_table)
         self.root.after_idle(self._update_groups_sb_visibility)
-
-    def _schedule_paint_group_combos(self) -> None:
-        self.root.after_idle(self._paint_group_combos_offline)
-
-    def _paint_group_combos_offline(self) -> None:
-        for pv, pc in zip(self.group_play_vars, self.group_play_combo):
-            try:
-                pc.configure(
-                    style="RedRO.TCombobox"
-                    if pv.get().startswith(self.tr("offline_prefix"))
-                    else "TCombobox"
-                )
-            except tk.TclError:
-                pass
-        for rv, rc in zip(self.group_rec_vars, self.group_rec_combo):
-            try:
-                rc.configure(
-                    style="RedRO.TCombobox"
-                    if rv.get().startswith(self.tr("offline_prefix"))
-                    else "TCombobox"
-                )
-            except tk.TclError:
-                pass
 
     def _add_group(self) -> None:
         if self.num_groups >= MAX_GROUPS:
@@ -1620,7 +1926,12 @@ class SoundSwitcherApp:
             )
         for hi in range(len(self.group_hotkey_entries)):
             self._set_hotkey_entry_text(hi)
-        self._paint_group_combos_offline()
+        for mi in range(min(len(self.group_mode_buttons), self.num_groups)):
+            self.group_mode_buttons[mi].configure(
+                text=self._text_for_group_apply_mode(
+                    self.cfg["groups"][mi].get("apply_mode")
+                )
+            )
 
     def _resolve_combo_id_with_offline(
         self, name_map: dict[str, str], var: tk.StringVar
@@ -1650,6 +1961,7 @@ class SoundSwitcherApp:
             "recording_id": rid,
             "playback_name": pn,
             "recording_name": rn,
+            "apply_mode": _normalize_group_apply_mode(prev.get("apply_mode")),
             "hotkey_mods": prev.get("hotkey_mods"),
             "hotkey_vk": prev.get("hotkey_vk"),
         }
@@ -1673,7 +1985,7 @@ class SoundSwitcherApp:
     def play_success_sound_after_device_change(self) -> None:
         self.root.after(150, play_success_sound)
 
-    def apply_selected_playback(self) -> None:
+    def _apply_selected_playback_roles(self, roles: list) -> None:
         sel = self.pb_tree.selection()
         if not sel:
             return
@@ -1685,13 +1997,22 @@ class SoundSwitcherApp:
         if off:
             return
         try:
-            set_default_playback(did)
+            set_default_endpoint_roles(did, roles)
             self.refresh_playback_list()
             self.play_success_sound_after_device_change()
         except Exception:
             return
 
-    def apply_selected_recording(self) -> None:
+    def apply_selected_playback_all(self) -> None:
+        self._apply_selected_playback_roles(ALL_ROLES)
+
+    def apply_selected_playback_device(self) -> None:
+        self._apply_selected_playback_roles(PRIMARY_DEFAULT_ROLES)
+
+    def apply_selected_playback_comm(self) -> None:
+        self._apply_selected_playback_roles([ERole.eCommunications])
+
+    def _apply_selected_recording_roles(self, roles: list) -> None:
         sel = self.rec_tree.selection()
         if not sel:
             return
@@ -1703,24 +2024,34 @@ class SoundSwitcherApp:
         if off:
             return
         try:
-            set_default_recording(did)
+            set_default_endpoint_roles(did, roles)
             self.refresh_recording_list()
             self.play_success_sound_after_device_change()
         except Exception:
             return
 
+    def apply_selected_recording_all(self) -> None:
+        self._apply_selected_recording_roles(ALL_ROLES)
+
+    def apply_selected_recording_device(self) -> None:
+        self._apply_selected_recording_roles(PRIMARY_DEFAULT_ROLES)
+
+    def apply_selected_recording_comm(self) -> None:
+        self._apply_selected_recording_roles([ERole.eCommunications])
+
     def apply_group(self, index: int) -> None:
         g = self.cfg["groups"][index]
         pid = g.get("playback_id")
         rid = g.get("recording_id")
+        roles = roles_for_group_apply_mode(g.get("apply_mode"))
         play_success_sound()
         if not pid and not rid:
             return
         try:
             if pid:
-                set_default_playback(pid)
+                set_default_endpoint_roles(pid, roles)
             if rid:
-                set_default_recording(rid)
+                set_default_endpoint_roles(rid, roles)
             self.refresh_playback_list()
             self.refresh_recording_list()
             play_success_sound()
@@ -1733,28 +2064,46 @@ class SoundSwitcherApp:
         g = self.cfg["groups"][index]
         pid = g.get("playback_id")
         rid = g.get("recording_id")
+        roles = roles_for_group_apply_mode(g.get("apply_mode"))
         if not pid and not rid:
             return
         try:
             if pid:
-                set_default_playback(pid)
+                set_default_endpoint_roles(pid, roles)
             if rid:
-                set_default_recording(rid)
+                set_default_endpoint_roles(rid, roles)
             self.refresh_playback_list()
             self.refresh_recording_list()
             play_success_sound()
         except Exception:
             pass
 
-    def _set_app_user_model_id(self) -> None:
-        if sys.platform != "win32":
+    def _text_for_group_apply_mode(self, mode: object) -> str:
+        m = _normalize_group_apply_mode(mode)
+        if m == GROUP_APPLY_PRIMARY:
+            return self.tr("group_mode_primary_short")
+        if m == GROUP_APPLY_COMM:
+            return self.tr("group_mode_comm_short")
+        return self.tr("group_mode_both_short")
+
+    def _cycle_group_apply_mode(self, index: int) -> None:
+        if index < 0 or index >= MAX_GROUPS or index >= self.num_groups:
             return
+        g = self.cfg["groups"][index]
+        cur = _normalize_group_apply_mode(g.get("apply_mode"))
         try:
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
-                self._win_title()
+            k = GROUP_APPLY_MODE_ORDER.index(cur)
+        except ValueError:
+            k = 0
+        nxt = GROUP_APPLY_MODE_ORDER[
+            (k + 1) % len(GROUP_APPLY_MODE_ORDER)
+        ]
+        g["apply_mode"] = nxt
+        save_config(self.cfg)
+        if index < len(self.group_mode_buttons):
+            self.group_mode_buttons[index].configure(
+                text=self._text_for_group_apply_mode(nxt)
             )
-        except Exception:
-            pass
 
     def _set_app_user_model_id(self) -> None:
         if sys.platform != "win32":
@@ -1920,7 +2269,7 @@ class SoundSwitcherApp:
 
     def _disable_button_focus_rect(self, root_widget) -> None:
         cls = str(getattr(root_widget, "winfo_class", lambda: "")())
-        if cls in ("TButton", "Button", "TCheckbutton", "Checkbutton"):
+        if cls in ("TButton", "Button", "TCheckbutton", "Checkbutton", "TCombobox"):
             try:
                 root_widget.configure(takefocus=False)
             except tk.TclError:
@@ -1935,6 +2284,35 @@ class SoundSwitcherApp:
                 t.focus_set()
         except Exception:
             pass
+
+    def _move_focus_to_app_root(self) -> None:
+        try:
+            self.root.focus_set()
+        except tk.TclError:
+            pass
+
+    def _group_combo_focus_is_active(self) -> bool:
+        combos = frozenset(
+            (*getattr(self, "group_play_combo", ()), *getattr(self, "group_rec_combo", ()))
+        )
+        if not combos:
+            return False
+        try:
+            cur = self.root.focus_get()
+        except tk.TclError:
+            return False
+        w: tk.Misc | None = cur
+        for _ in range(20):
+            if w is None:
+                break
+            if w in combos:
+                return True
+            try:
+                nxt = w.master
+            except tk.TclError:
+                break
+            w = nxt
+        return False
 
     def _on_ttk_buttonlike_release(self, event) -> None:
         self.root.after_idle(lambda: self._defocus_toplevel_of(event.widget))
@@ -1951,11 +2329,103 @@ class SoundSwitcherApp:
             style.map("TCheckbutton", focuscolor=[("focus", bg), ("!focus", bg)])
         except tk.TclError:
             pass
+        try:
+            cbg = style.lookup("TCombobox", "fieldbackground") or style.lookup(
+                "TCombobox", "background"
+            )
+            style.configure("TCombobox", focuscolor=cbg)
+            style.map(
+                "TCombobox",
+                focuscolor=[("focus", cbg), ("!focus", cbg)],
+            )
+        except tk.TclError:
+            pass
+        try:
+            self.root.tk.eval("ttk::style configure TCombobox -focuswidth 0")
+        except tk.TclError:
+            pass
+
+        if not getattr(self, "_group_combo_focus_aux_binds_done", False):
+            self._group_combo_focus_aux_binds_done = True
+            self.root.bind_all(
+                "<Button-1>",
+                self._group_combo_root_click_maybe_defocus,
+                add="+",
+            )
+            try:
+                self.root.bind_class(
+                    "Listbox",
+                    "<Escape>",
+                    self._group_combo_esc_from_combo_popdown_listbox,
+                    add="+",
+                )
+            except tk.TclError:
+                pass
+
         if getattr(self, "_ttk_focus_release_bind_done", False):
             return
         self._ttk_focus_release_bind_done = True
         self.root.bind_class("TButton", "<ButtonRelease-1>", self._on_ttk_buttonlike_release, add="+")
         self.root.bind_class("TCheckbutton", "<ButtonRelease-1>", self._on_ttk_buttonlike_release, add="+")
+
+    def _group_combo_root_click_maybe_defocus(self, event: tk.Event) -> None:
+        w = event.widget
+        try:
+            if "popdown" in str(w).lower():
+                return
+        except tk.TclError:
+            return
+        combos = [
+            *getattr(self, "group_play_combo", ()),
+            *getattr(self, "group_rec_combo", ()),
+        ]
+        try:
+            if w in combos:
+                return
+        except tk.TclError:
+            return
+        self.root.after(1, self._group_combo_defocus_if_still_focused)
+
+    def _group_combo_defocus_if_still_focused(self) -> None:
+        self.root.update_idletasks()
+        if not self._group_combo_focus_is_active():
+            return
+        self._move_focus_to_app_root()
+
+    def _on_group_combo_selected_defocus(self, event: tk.Event) -> None:
+        self.root.after(1, self._group_combo_selected_defocus_apply)
+
+    def _group_combo_selected_defocus_apply(self) -> None:
+        self._move_focus_to_app_root()
+
+    def _on_group_combo_esc(self, event: tk.Event) -> str:
+        self._move_focus_to_app_root()
+        return "break"
+
+    def _group_combo_esc_from_combo_popdown_listbox(self, event: tk.Event) -> str | None:
+        try:
+            lw = event.widget
+            ls = str(lw).lower()
+            if "popdown" not in ls:
+                return None
+            cur = lw
+            for _ in range(32):
+                try:
+                    if str(cur.winfo_class()) == "TCombobox":
+                        self._move_focus_to_app_root()
+                        return "break"
+                except tk.TclError:
+                    break
+                try:
+                    nxt = getattr(cur, "master", None)
+                except tk.TclError:
+                    break
+                if nxt is None:
+                    break
+                cur = nxt
+        except tk.TclError:
+            pass
+        return None
 
     def _begin_hotkey_capture(self, index: int) -> None:
         if self._hotkey_capture_index == index:
