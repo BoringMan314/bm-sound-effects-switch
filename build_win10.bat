@@ -12,8 +12,6 @@ if not exist "build" mkdir "build" 2>nul
 if not exist "dist" mkdir "dist" 2>nul
 call :clean_dir_contents "build"
 call :clean_dir_contents "dist"
-if exist "bm-sound-effects-switch.spec" del /f /q "bm-sound-effects-switch.spec" 2>nul
-if exist "bm-sound-effects-switch_win7.spec" del /f /q "bm-sound-effects-switch_win7.spec" 2>nul
 if exist "%EXE_NAME%" del /F /Q "%EXE_NAME%" 2>nul
 
 call :find_python
