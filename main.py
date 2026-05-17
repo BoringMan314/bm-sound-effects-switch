@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import winreg
 import threading
 import time
 import webbrowser
@@ -39,6 +40,8 @@ WM_HOTKEY = 0x0312
 PM_REMOVE = 0x0001
 
 SINGLE_APP_ID = "bm-sound-effects-switch"
+REG_RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
+REG_VALUE_NAME = SINGLE_APP_ID
 _app_mutex_handle = None
 
 
@@ -52,7 +55,7 @@ ABOUT_URL = "http://exnormal.com:81/"
 
                                                  
 WINDOW_TITLE_PREFIX = "[B.M]"
-WINDOW_TITLE_VERSION = "V1.0"
+WINDOW_TITLE_VERSION = "V1.1"
                       
 WINDOW_TITLE_AUTHOR_SUFFIX = " By. [B.M] 圓周率 3.14"
 DEFAULT_TK_FONT_SIZE = 10
@@ -139,6 +142,8 @@ _DEFAULT_ZH_TW = {
     "tip_hotkey_duplicate": "此組合與第 {n} 組相同。",
     "tip_hotkey_register_failed": "無法註冊快捷鍵（可能與其他程式衝突）。",
     "tip_hotkey_need_modifier": "請至少按住 Ctrl、Alt、Shift 或 Win 之一再按一鍵。",
+    "autostart_checkbox": "跟著 Windows 啟動",
+    "auto_minimize_checkbox": "啟動後自動縮小",
     "about": "關於",
     "exit": "離開",
 }
@@ -202,6 +207,8 @@ _DEFAULT_ZH_CN = {
     "tip_hotkey_duplicate": "此组合与第 {n} 组相同。",
     "tip_hotkey_register_failed": "无法注册快捷键（可能与其他程序冲突）。",
     "tip_hotkey_need_modifier": "请至少按住 Ctrl、Alt、Shift 或 Win 之一再按键。",
+    "autostart_checkbox": "随 Windows 启动",
+    "auto_minimize_checkbox": "启动后自动最小化",
     "about": "关于",
     "exit": "离开",
 }
@@ -265,6 +272,8 @@ _DEFAULT_JA = {
     "tip_hotkey_duplicate": "プリセット {n} と同じ組み合わせです。",
     "tip_hotkey_register_failed": "ショートカットを登録できません（他アプリと競合している可能性があります）。",
     "tip_hotkey_need_modifier": "Ctrl / Alt / Shift / Win のいずれかを押しながらキーを押してください。",
+    "autostart_checkbox": "Windows 起動時に実行",
+    "auto_minimize_checkbox": "起動後に最小化",
     "about": "バージョン情報",
     "exit": "終了",
 }
@@ -328,6 +337,8 @@ _DEFAULT_EN = {
     "tip_hotkey_duplicate": "Same combination as preset {n}.",
     "tip_hotkey_register_failed": "Could not register hotkey (may conflict with another app).",
     "tip_hotkey_need_modifier": "Hold Ctrl, Alt, Shift, or Win, then press a key.",
+    "autostart_checkbox": "Start with Windows",
+    "auto_minimize_checkbox": "Start minimized",
     "about": "About",
     "exit": "Exit",
 }
@@ -643,11 +654,46 @@ def tk_keyevent_to_mods_vk(event: tk.Event) -> tuple[int, int] | None:
 
 def default_config() -> dict:
     return {
-        "settings": {"languages": "zh_TW"},
+        "settings": {
+            "languages": "zh_TW",
+            "auto_start": False,
+            "auto_minimize": False,
+        },
         "languages": copy.deepcopy(DEFAULT_TRANSLATIONS),
         "num_groups": DEFAULT_NUM_GROUPS,
         "groups": [_empty_group() for _ in range(MAX_GROUPS)],
     }
+
+
+def _get_exe_path_for_autostart() -> str:
+    if getattr(sys, "frozen", False) and sys.executable:
+        return os.path.normpath(sys.executable)
+    return os.path.normpath(os.path.abspath(sys.argv[0]))
+
+
+def set_auto_start(enabled: bool) -> None:
+    try:
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER, REG_RUN_KEY, 0, winreg.KEY_SET_VALUE
+        )
+    except Exception:
+        return
+    try:
+        if enabled:
+            winreg.SetValueEx(
+                key, REG_VALUE_NAME, 0, winreg.REG_SZ, _get_exe_path_for_autostart()
+            )
+        else:
+            try:
+                winreg.DeleteValue(key, REG_VALUE_NAME)
+            except OSError:
+                pass
+    except Exception:
+        pass
+    try:
+        winreg.CloseKey(key)
+    except Exception:
+        pass
 
 
 def _ensure_language_translation_keys_inplace(raw: dict) -> dict:
@@ -753,6 +799,20 @@ def load_config() -> dict:
         set_current_lang(data, ul)
     else:
         set_current_lang(data, "zh_TW" if "zh_TW" in langs else langs[0])
+    st = data.setdefault("settings", {})
+    if not isinstance(st, dict):
+        st = {}
+        data["settings"] = st
+    if isinstance(raw_settings, dict):
+        for key in ("auto_start", "auto_minimize"):
+            val = raw_settings.get(key)
+            if isinstance(val, bool):
+                st[key] = val
+            else:
+                st.setdefault(key, False)
+    else:
+        st.setdefault("auto_start", False)
+        st.setdefault("auto_minimize", False)
     return data
 
 
@@ -1161,6 +1221,10 @@ class SoundSwitcherApp:
         self._pb_iid_meta: dict[str, tuple[str, bool]] = {}
         self._rec_iid_meta: dict[str, tuple[str, bool]] = {}
 
+        st = self.cfg.get("settings") or {}
+        self._var_autostart = tk.BooleanVar(value=bool(st.get("auto_start")))
+        self._var_minimize = tk.BooleanVar(value=bool(st.get("auto_minimize")))
+
         self._tray_icon = None
         self._hiding_to_tray = False
         self._apply_window_icon()
@@ -1189,6 +1253,7 @@ class SoundSwitcherApp:
         atexit.register(self._cleanup_hotkeys)
         self.root.after(80, self._setup_hotkeys)
         self._start_tray()
+        set_auto_start(self._var_autostart.get())
 
     def _apply_window_icon(self) -> None:
         ico = os.path.abspath(os.path.normpath(resource_path("icons", "icon.ico")))
@@ -1359,6 +1424,24 @@ class SoundSwitcherApp:
         )
         self._btn_pb_default_comm.pack(side=tk.LEFT, padx=(0, bp_e))
         ttk.Frame(bf).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        bf_opts = ttk.Frame(bf)
+        bf_opts.pack(side=tk.RIGHT)
+        self._chk_min = ttk.Checkbutton(
+            bf_opts,
+            text=self.tr("auto_minimize_checkbox"),
+            variable=self._var_minimize,
+            command=self._on_minimize_toggled,
+        )
+        self._chk_min.configure(takefocus=False)
+        self._chk_min.pack(side=tk.RIGHT, padx=(0, bp_e))
+        self._chk_autostart = ttk.Checkbutton(
+            bf_opts,
+            text=self.tr("autostart_checkbox"),
+            variable=self._var_autostart,
+            command=self._on_autostart_toggled,
+        )
+        self._chk_autostart.configure(takefocus=False)
+        self._chk_autostart.pack(side=tk.RIGHT, padx=(bp_g, bp_g))
         r += 2
 
                     
@@ -1548,6 +1631,28 @@ class SoundSwitcherApp:
                 pass
         self._launch_mmsys(2)
 
+    def _on_autostart_toggled(self) -> None:
+        st = self.cfg.get("settings")
+        if not isinstance(st, dict):
+            st = {}
+            self.cfg["settings"] = st
+        st["auto_start"] = bool(self._var_autostart.get())
+        set_auto_start(st["auto_start"])
+        save_config(self.cfg)
+
+    def _on_minimize_toggled(self) -> None:
+        st = self.cfg.get("settings")
+        if not isinstance(st, dict):
+            st = {}
+            self.cfg["settings"] = st
+        st["auto_minimize"] = bool(self._var_minimize.get())
+        save_config(self.cfg)
+
+    def maybe_start_minimized(self) -> None:
+        st = self.cfg.get("settings") or {}
+        if bool(st.get("auto_minimize")):
+            self.root.after(0, lambda: self.root.iconify())
+
     def _cycle_language(self) -> None:
         global _singleton_window_title
         langs = available_ui_languages(self.cfg)
@@ -1573,6 +1678,8 @@ class SoundSwitcherApp:
         self._btn_pb_default_all.configure(text=self.tr("set_default_all"))
         self._btn_pb_default_device.configure(text=self.tr("set_default_device"))
         self._btn_pb_default_comm.configure(text=self.tr("set_default_comm"))
+        self._chk_autostart.configure(text=self.tr("autostart_checkbox"))
+        self._chk_min.configure(text=self.tr("auto_minimize_checkbox"))
         self._lbl_rec_title.configure(text=self.tr("recording_devices"))
         self._btn_rec_refresh.configure(text=self.tr("refresh"))
         self._btn_rec_default_all.configure(text=self.tr("set_default_all"))
@@ -2606,6 +2713,14 @@ def main() -> None:
         pass
     app = SoundSwitcherApp()
     bm_single_instance.start_pipe_server(SINGLE_APP_ID, lambda: app.root.after(0, app._on_close))
+    app.maybe_start_minimized()
+    if not (app.cfg.get("settings") or {}).get("auto_minimize"):
+        app.root.deiconify()
+        app.root.lift()
+        try:
+            app.root.focus_force()
+        except tk.TclError:
+            pass
     app.root.mainloop()
 
 
