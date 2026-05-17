@@ -4,6 +4,7 @@
 [![Python](https://img.shields.io/badge/Python-Win10%3A3.10%2B%20%7C%20Win7%3A3.8-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Build](https://img.shields.io/badge/Build-PyInstaller-2E8B57)](https://pyinstaller.org/)
 [![GitHub](https://img.shields.io/badge/GitHub-bm--sound--effects--switch-181717?logo=github)](https://github.com/BoringMan314/bm-sound-effects-switch)
+[![GitHub all releases](https://img.shields.io/github/downloads/BoringMan314/bm-sound-effects-switch/total)](https://github.com/BoringMan314/bm-sound-effects-switch/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Windows 音效裝置切換工具，支援播放／錄製預設裝置一鍵套用、全域熱鍵、系統匣操作與多語系介面。
@@ -46,7 +47,8 @@ Windows 音效裝置切換工具，支援播放／錄製預設裝置一鍵套用
 - 內建語言：繁體中文、簡體中文、日本語、English；**可**在設定檔根層 `languages` **新增**其他語系代碼。**每一**語系物件的**鍵集合**須與程式內建 **`_DEFAULT_ZH_TW`**（`main.py`，等同 `SOUND_I18N_REF_KEYS`）**完全一致**，缺一即驗證失敗，程式會刪除壞檔並寫入內建預設。
 - 系統匣：
   - 左鍵預設動作可將視窗還原到 `100,100`
-  - 右鍵選單：關於我、離開（鍵名 `about`、`exit`）
+  - 右鍵選單：有新版時顯示「下載更新」、**GitHub**、關於、離開（`download_update`、`about`、`exit`）
+- **更新檢查**（啟動時一次）：向 GitHub Releases 查詢是否有較新版本；有新版時**視窗標題**每 3 秒輪播提示。**僅**點「下載更新」時，將 Win10 版 exe 存到程式同目錄，檔名為 `bm-sound-effects-switch-Vx.y.z.exe`（不覆寫執行中 exe；同檔名已存在則跳過）。
 - 防多開：後開會嘗試關閉前開（含 EXE 改名／複製情境）。
 - 開關或套用時播放 `wav/switch.wav` 音效。
 

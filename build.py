@@ -15,6 +15,7 @@ HIDDEN_IMPORTS = [
     "pystray",
     "keyboard",
     "bm_single_instance",
+    "bm_github_update",
     "pycaw",
     "comtypes",
 ]
