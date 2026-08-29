@@ -7,11 +7,6 @@ build/
 __pycache__/
 *.pyc
 *.log
+/bm-sound-effects-switch.json
 /*.url
 /*.zip
-/bm-sound-effects-switch.json
-
-*.cul
-
-*.url
-*.zip
